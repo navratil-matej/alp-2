@@ -1,0 +1,10 @@
+job,building,transmittion-rate
+professor,uni,0.5
+student,uni,1.0
+teacher,school,0.5
+pupil,school,1.0
+cashier,shop,1.0
+worker,factory,1.0
+programmer,office,1.0
+artist,gallery,1.0
+doctor,hospital,0.2
