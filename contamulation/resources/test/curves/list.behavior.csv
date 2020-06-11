@@ -1,4 +1,0 @@
-id,action,target,time-rate-timetable,duration-curve,params
-shopping,go,shop,shopping-rate,shopping-duration,--asleep=0.0 --at_work=0.0 --after_work=4.0 --repeated=0.1
-injury,go,hospital,injury-rate,injury-duration,--asleep=0.1 --at_work=0.5
-culture,go,gallery,culture-rate,culture-rate,--asleep=0.0 --at_work=0.0

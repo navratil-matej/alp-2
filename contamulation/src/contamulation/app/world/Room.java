@@ -1,14 +1,18 @@
 package contamulation.app.world;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import contamulation.api.SimLoggable;
 import contamulation.api.TimeSensitive;
+import contamulation.app.results.HourlyLogger;
 import contamulation.app.simulation.Simulation;
+import contamulation.tools.structs.Address;
+import contamulation.tools.structs.Curve;
+import contamulation.tools.structs.SimTime;
 
-public class Room implements TimeSensitive
+public class Room implements TimeSensitive, SimLoggable
 {
 	private Set<Person> people;
 	private int capacityJob;
@@ -25,25 +29,51 @@ public class Room implements TimeSensitive
 		this.contact = contact;
 	}
 
-	public void enteredBy(Person person, boolean job)
+	/**
+	 * Adds person to this room as specified by address.
+	 * @param person Person to add.
+	 * @param address Address to add to, given for the isWorking field.
+	 */
+	public void addPerson(Person person, Address address)
 	{
 		people.add(person);
-		if(job)
+		if(address.isWorking())
 			currentJob++;
 		else
 			currentOuter++;
 	}
-	
-	public void leftBy(Person person, boolean job)
+
+	/**
+	 * Removes person from this room as specified by address.
+	 * @param person Person to remove.
+	 * @param address Address to remove from, given for the isWorking field.
+	 */
+	public void removePerson(Person person, Address address)
 	{
 		people.remove(person);
-		if(job)
+		if(address.isWorking())
 			currentJob--;
 		else
 			currentOuter--;
 	}
 	
-	public boolean canBeEntered(boolean job)
+	/**
+	 * Checks whether this room has space for a person.
+	 * @param address Address to remove check, given for the isWorking field.
+	 * @return whether this room has space for a person.
+	 */
+	public boolean hasRoom(Address address)
+	{
+		return hasRoom(address.isWorking());
+	}
+
+	
+	/**
+	 * Checks whether this room has space for a person.
+	 * @param job Whether to look for a work place or visit place.
+	 * @return whether this room has space for a person.
+	 */
+	public boolean hasRoom(boolean job)
 	{
 		if(job)
 			return currentJob < capacityJob;
@@ -51,34 +81,31 @@ public class Room implements TimeSensitive
 			return currentOuter < capacityOuter;
 	}
 	
-	public boolean isPresent(Person person)
-	{
-		return people.contains(person);
-	}
-	
-	public int capacityJob()
-	{
-		return capacityJob;
-	}
-	
-	public int capacityOuter()
-	{
-		return capacityOuter;
-	}
-	
 	@Override
-	public void nextHour()
+	public void nextHour(SimTime time)
 	{
 		final Simulation sim =Simulation.INSTANCE; 
 		final Random rand = sim.random();
-		final double spread = sim.disease().getTransmission() * contact;
+		final Curve<Double> transmission = sim.disease().getTransmissionChanceCurve();
 		for(Person a : people)
 		{
-			for(Person b : people)
+			a.nextHour(time);
+			if(a.isInfectious())
 			{
-				if(rand.nextDouble() < spread)
-					a.transmit(b);
+				for(Person b : people)
+				{                         // TODO magic
+					final double chance = (1.0/24) * contact * a.getJob().getContact() * b.getJob().getContact(); 
+					if(rand.nextDouble() < transmission.get(a.getInfectionProgress()) * chance)
+						a.transmit(b);
+				}
 			}
 		}
+	}
+
+	@Override
+	public void probe(HourlyLogger logger)
+	{
+		for(Person p : people)
+			logger.logPerson(p);
 	}
 }

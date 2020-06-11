@@ -1,17 +1,13 @@
 package competition.io;
 
-import java.io.BufferedReader;
 import java.io.DataInputStream;
-import java.io.FileInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
-import competition.app.Competitor;
 import competition.app.CompetitorBuilder;
 
 public class BinStartFile implements StartFile
@@ -34,10 +30,13 @@ public class BinStartFile implements StartFile
 	}
 
 	@Override
-	public void writeAll(List<Competitor> competitor) throws IOException
+	public void writeAll(List<CompetitorBuilder> builders) throws IOException
 	{
-		// TODO Auto-generated method stub
-		
+		try (DataOutputStream dout = new DataOutputStream(Files.newOutputStream(path)))
+		{
+			for(CompetitorBuilder b : builders)
+				b.write(dout);
+//			dout.close();
+		}
 	}
-
 }

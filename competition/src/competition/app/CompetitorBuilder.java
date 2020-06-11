@@ -1,6 +1,7 @@
 package competition.app;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.util.Scanner;
@@ -40,6 +41,22 @@ public class CompetitorBuilder
 		final int m  = din.readInt();
 		final int s  = din.readInt();
 		return new CompetitorBuilder(name, surname, id, LocalTime.of(h, m, s));
+	}
+
+	public String serialize()
+	{
+		return String.format("%15s %15s %4d %02d %02d %02d",
+			name, surname, id, time.getHour(), time.getMinute(), time.getSecond());
+	}
+
+	public void write(DataOutputStream dout) throws IOException
+	{
+		dout.writeUTF(name);
+		dout.writeUTF(surname);
+		dout.writeInt(id);
+		dout.writeInt(time.getHour());
+		dout.writeInt(time.getMinute());
+		dout.writeInt(time.getSecond());
 	}
 	
 	public Competitor build(LocalTime end)

@@ -1,6 +1,6 @@
 package contamulation.api;
 
-import java.util.Properties;
+import contamulation.app.simulation.SimulationConfig;
 
 /**
  * Denotes an object which can be loaded from a sim.properties file.
@@ -10,7 +10,7 @@ import java.util.Properties;
  */
 public interface SimSerializable<T extends SimSerializable<T>>
 {
-	public void write(Properties sim);
+	public void write(SimulationConfig cfg);
 	
-	public void read(Properties sim);
+	public void read(SimulationConfig cfg);
 }

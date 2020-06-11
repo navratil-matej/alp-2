@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import contamulation.api.Parsers;
 import contamulation.tools.ArrayTools;
 import contamulation.tools.files.BinReadParser;
 import contamulation.tools.files.BinWriteParser;
@@ -18,6 +19,12 @@ public class Timetable<T>
 {
 	private List<Double> times;
 	private List<T>      items;
+	
+	public Timetable()
+	{
+		times = new ArrayList<>();
+		items = new ArrayList<>();
+	}
 	
 	public Timetable(List<SimTime> times, List<T> items)
 	{
@@ -32,14 +39,10 @@ public class Timetable<T>
 	{
 		List<SimTime> times = new ArrayList<>();
 		List<R>       items = new ArrayList<>();
-		FileReadParser in = null;
-		if(path.toString().endsWith(".timetable.csv"))
-			in = new CsvReadParser(path);
-		if(path.toString().endsWith(".timetable.bin"))
-			in = new BinReadParser(path);
+		FileReadParser in = Parsers.readerFor(path);
 		if(in == null)
 			throw new InvalidPathException(path.toString(),
-				"specified file is not a timetable file."); // TODO custom extensions
+				"specified file is not a timetable file.");
 		while(in.hasNext())
 		{
 			times.add(in.read(SimTime.class));
@@ -55,14 +58,10 @@ public class Timetable<T>
 	 */
 	public void toFile(Class<T> type, Path path)
 	{
-		FileWriteParser out = null;
-		if(path.toString().endsWith(".curve.csv"))
-			out = new CsvWriteParser(path);
-		if(path.toString().endsWith(".curve.bin"))
-			out = new BinWriteParser(path);
+		FileWriteParser out = Parsers.writerFor(path);
 		if(out == null)
 			throw new InvalidPathException(path.toString(),
-				"specified file is not a curve file."); // TODO custom extensions
+				"specified file is not a curve file.");
 		for(Kvp<SimTime, T> kvp : list())
 		{
 			out.write(SimTime.class, kvp.key);
@@ -82,6 +81,6 @@ public class Timetable<T>
 	public T get(SimTime time)
 	{
 		final int i = ArrayTools.binsearchLessEqual(times, time.ordinal());
-		return items.get(time.ordinal());
+		return items.get(i);
 	}
 }

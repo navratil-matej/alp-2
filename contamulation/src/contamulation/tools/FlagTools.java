@@ -2,8 +2,11 @@ package contamulation.tools;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Function;
 
+import contamulation.app.behavior.BehaviorFlag;
+import contamulation.app.behavior.BehaviorFlags;
 import contamulation.app.behavior.BehaviorState;
 import contamulation.app.flags.BuildingFlags;
 import contamulation.tools.structs.Kvp;
@@ -15,12 +18,12 @@ import contamulation.tools.structs.Kvp;
  */
 public final class FlagTools
 {
-	protected static Map<Class<?>, Function<String, ?>> parsers;
+	protected static Map<Class<?>, Function<String, ?>> parsers = new HashMap<>();
 	
 	static
 	{
-		parsers.put(BehaviorState.class, (str) -> BehaviorState.valueOf(str.toUpperCase()));
-		parsers.put(BuildingFlags.class, (str) -> BuildingFlags.valueOf(str.toUpperCase()));
+		parsers.put(BehaviorFlag.class, (str) -> BehaviorFlags.valueOf(str.toUpperCase())); // TODO
+//		parsers.put(BuildingFlags.class, (str) -> BuildingFlags.valueOf(str.toUpperCase()));
 		parsers.put(Double.class, (str) -> Double.parseDouble(str));
 		parsers.put(Integer.class, (str) -> Integer.parseInt(str));
 		parsers.put(String.class, (str) -> str);
@@ -49,5 +52,14 @@ public final class FlagTools
 			map.put(flag.getKey(), flag.getValue());
 		}
 		return map;
+	}
+	
+	public static <K, V> String serializeMany(Map<K, V> flags)
+	{
+		StringBuilder sb = new StringBuilder();
+		for(Entry<K, V> kvp : flags.entrySet())
+			sb.append(" --").append(kvp.getKey  ().toString().toLowerCase())
+				.append("=").append(kvp.getValue().toString().toLowerCase());
+		return sb.substring(1);
 	}
 }

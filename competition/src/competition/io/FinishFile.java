@@ -10,5 +10,5 @@ public interface FinishFile
 {
 	public List<Competitor> readAll(List<CompetitorBuilder> starts) throws IOException;
 
-	public void writeAll(Competitor competitor) throws IOException;
+	void writeAll(List<Competitor> competitor) throws IOException;
 }

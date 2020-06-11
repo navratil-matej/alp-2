@@ -29,12 +29,12 @@ public class SsvStartFile implements StartFile
 	}
 
 	@Override
-	public void writeAll(List<Competitor> competitors) throws IOException
+	public void writeAll(List<CompetitorBuilder> builders) throws IOException
 	{
 		List<String> lines = new ArrayList<>();
-		for(Competitor c : competitors)
+		for(CompetitorBuilder b : builders)
 		{
-			lines.add(c.toString());
+			lines.add(b.serialize());
 		}
 		Files.write(path, lines);
 	}

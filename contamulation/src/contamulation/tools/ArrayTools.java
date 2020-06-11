@@ -7,7 +7,7 @@ public class ArrayTools
 {
 	public static <T> void shuffle(T[] array, Random rand)
 	{
-		for(int i = array.length-1; i > 0; i++)
+		for(int i = array.length-1; i > 0; i--)
 		{
 			int ind = rand.nextInt(i+1);
 			T temp = array[ind];
@@ -25,7 +25,7 @@ public class ArrayTools
 	    while (low <= high)
 	    {
 	        int mid = (low + high) / 2;
-	        if (mid < array.length && array.length <= target)
+	        if (mid < array.length && array[mid] <= target)
 	        {
 	        	index = mid;
 	            low = mid + 1;
@@ -46,7 +46,7 @@ public class ArrayTools
 	    while (low <= high)
 	    {
 	        int mid = (low + high) / 2;
-	        if (mid < list.size() && list.size() <= target)
+	        if (mid < list.size() && list.get(mid) <= target)
 	        {
 	        	index = mid;
 	            low = mid + 1;

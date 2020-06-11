@@ -1,8 +1,0 @@
-id,capacity-jobs,capacity-outer,room-size,contact-rate
-uni,2000,0,50,0.2
-school,600,0,30,0.4
-shop,20,80,100,0.2
-factory,500,0,50,0.05
-office,1000,0,10,0.2
-gallery,50,450,50,0.05
-hospital,50,450,50,0.02

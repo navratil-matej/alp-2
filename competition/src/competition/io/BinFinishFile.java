@@ -1,16 +1,14 @@
 package competition.io;
 
-import java.io.BufferedReader;
 import java.io.DataInputStream;
-import java.io.FileInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Scanner;
 
 import competition.app.Competitor;
 import competition.app.CompetitorBuilder;
@@ -59,10 +57,20 @@ public class BinFinishFile implements FinishFile
 	}
 
 	@Override
-	public void writeAll(Competitor competitor)
+	public void writeAll(List<Competitor> competitors) throws IOException
 	{
-		// TODO Auto-generated method stub
-		
+		try (DataOutputStream dout = new DataOutputStream(Files.newOutputStream(path)))
+		{
+			for(Competitor c : competitors)
+			{
+				LocalTime t = c.getEnd();
+				dout.writeInt(c.getId());
+				dout.writeInt(t.getHour());
+				dout.writeInt(t.getMinute());
+				dout.writeInt(t.getSecond());
+				dout.writeInt(t.getNano() / 1000);
+			}
+//			dout.close();
+		}
 	}
-
 }

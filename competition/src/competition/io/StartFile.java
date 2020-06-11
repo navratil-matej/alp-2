@@ -10,5 +10,5 @@ public interface StartFile
 {
 	public List<CompetitorBuilder> readAll() throws IOException;
 
-	public void writeAll(List<Competitor> competitor) throws IOException;
+	void writeAll(List<CompetitorBuilder> builders) throws IOException;
 }

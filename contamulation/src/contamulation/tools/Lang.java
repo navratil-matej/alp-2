@@ -53,6 +53,31 @@ public class Lang
 
 		public static final String INVALID_PATH = "err.invalid-path";
 		public static final String INVALID_FILE = "err.invalid-file";
+		public static final String INVALID_OPTION = "err.invalid-option";
+		public static final String NUMBER_FORMAT_EXCEPTION = "err.number-format";
+
+		public static final String CLASS_DOUBLE = "type.double";
+		public static final String CLASS_JOB_ID = "type.job-id";
+		public static final String CLASS_ARCH_ID = "type.arch-id";
+
+		public static final String SELECT_CONFIG = "config.select";
+		public static final String CONFIG_POPULATION_SIZE = "config.population-size";
+		public static final String CONFIG_CITY_COUNT = "config.city-count";
+		public static final String CONFIG_SELECT_FILE = "config.select-file";
+		public static final String CONFIG_DISEASE = "config.disease";
+
+		public static final String SELECT_FILE_TYPE = "config.select-file-type";
+		public static final String CITY_SIZE_FILE = "config.city-size-file";
+		public static final String JOB_FILE = "config.job-file";
+		public static final String JOB_DISTRIBUTION_FILE = "config.job-distribution-file";
+		public static final String BUILDING_FILE = "config.building-file";
+		public static final String BUILDING_DISTRIBUTION_FILE = "config.building-distribution-file";
+		public static final String BEHAVIOR_FILE = "config.behavior-file";
+		public static final String BEHAVIOR_DIR = "config.behavior-dir";
+		public static final String DISEASE_DIR = "config.disease-dir";
+		
+		public static final String CONFIG_ENTER_CITY_COUNT = "config.enter-city-count";
+		public static final String CONFIG_ENTER_POPULATION_SIZE = "config.enter-population-size";
 
 		public static final String SELECT_OPERATION = "edit.select-operation";
 		public static final String OPERATION_ADD = "edit.operation-add";
@@ -64,11 +89,22 @@ public class Lang
 		public static final String JOB = "edit.job";
 		public static final String JOB_DISTRIBUTION_POINT = "edit.job-distribution-point";
 		public static final String BUILDING = "edit.building";
-		public static final String BUILDING_DISTRIBUTION_POINT = "edit.building_distribution_point";
+		public static final String BUILDING_DISTRIBUTION_POINT = "edit.building-distribution-point";
 		public static final String BEHAVIOR = "edit.behavior";
 		public static final String BEHAVIOR_TIMETABLE_POINT = "edit.behavior-timetable-point";
 		public static final String DISEASE_INCUBATION_POINT = "edit.disease-incubation-point";
 		public static final String DISEASE_TRANSMISSION_POINT = "edit.disease-transmission-point";
+		public static final String DISEASE_DIAGNOSIS_POINT = "edit.disease-diagnosis-point";
+		
+		public static final String LIST_TOP_DAYS  = "results.list-top-days";
+		public static final String LIST_TOP_HOURS = "results.list-top-hours";
+		public static final String SORT_BY_NEW_INFECTED  = "results.sort-new-infected";
+		public static final String SORT_BY_NEW_RECOVERED = "results.sort-new-recovered";
+		public static final String SORT_BY_DAILY_FACTOR = "results.sort-daily-factor";
+		public static final String RESTORE = "results.restore";
+		public static final String DAILY_LOG_HEADER = "results.daily-log-header";
+		
+		
 	}
 	
 	/**

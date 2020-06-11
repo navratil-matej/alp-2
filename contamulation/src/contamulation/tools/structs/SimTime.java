@@ -72,4 +72,14 @@ public class SimTime implements Comparable<SimTime>
 	{
 		return ordinal() - other.ordinal();
 	}
+
+	public int getHour()
+	{
+		return hour;
+	}
+
+	public int getDay()
+	{
+		return day;
+	}
 }

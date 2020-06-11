@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import contamulation.api.Parsers;
 import contamulation.tools.ArrayTools;
 import contamulation.tools.files.BinReadParser;
 import contamulation.tools.files.BinWriteParser;
@@ -48,14 +49,10 @@ public class Curve<T>
 	{
 		List<Double> x = new ArrayList<>();
 		List<R     > y = new ArrayList<>();
-		FileReadParser in = null;
-		if(path.toString().endsWith(".curve.csv"))
-			in = new CsvReadParser(path);
-		if(path.toString().endsWith(".curve.bin"))
-			in = new BinReadParser(path);
+		FileReadParser in = Parsers.readerFor(path);
 		if(in == null)
 			throw new InvalidPathException(path.toString(),
-				"specified file is not a curve file."); // TODO custom extensions
+				"specified file is not a curve file.");
 		while(in.hasNext())
 		{
 			x.add(in.read(Double.class));
@@ -71,14 +68,10 @@ public class Curve<T>
 	 */
 	public void toFile(Class<T> type, Path path)
 	{
-		FileWriteParser out = null;
-		if(path.toString().endsWith(".curve.csv"))
-			out = new CsvWriteParser(path);
-		if(path.toString().endsWith(".curve.bin"))
-			out = new BinWriteParser(path);
+		FileWriteParser out = Parsers.writerFor(path);
 		if(out == null)
 			throw new InvalidPathException(path.toString(),
-				"specified file is not a curve file."); // TODO custom extensions
+				"specified file is not a curve file.");
 		for(Kvp<Double, T> kvp : list())
 		{
 			out.write(Double.class, kvp.key);

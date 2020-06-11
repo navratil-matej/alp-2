@@ -3,53 +3,47 @@ package contamulation.app.world;
 import java.util.ArrayList;
 import java.util.List;
 
+import contamulation.api.SimLoggable;
 import contamulation.api.TimeSensitive;
-import contamulation.tools.files.FileReadParser;
-import contamulation.tools.files.FileWriteParser;
+import contamulation.app.behavior.Architecture;
+import contamulation.app.results.HourlyLogger;
+import contamulation.tools.structs.Address;
+import contamulation.tools.structs.SimTime;
 
 /**
  * A struct representing a building which can be entered and exited by people.
  * @author des
  *
  */
-public class Building implements TimeSensitive
+public class Building implements TimeSensitive, SimLoggable
 {
-	private String type;
+	private int cityIndex;
+	private int index;
+	
+	private Architecture arch;
 	private List<Room> rooms;
-	private int roomCount;
-	private double contact;
 	
-	public Building(String type, int roomCount, int roomJobCap, int roomOutCap, double contact)
+	public Building(City city, int index, Architecture arch)
 	{
-		this.type = type;
+		this.cityIndex = city.index();
+		this.index = index;
+		this.arch = arch;
 		this.rooms = new ArrayList<Room>();
-		this.contact = contact;
-		for(int i = 0; i < roomCount; i++)
-			rooms.add(new Room(roomJobCap / roomCount, roomOutCap / roomCount, contact));
+		for(int i = 0; i < arch.roomCount(); i++)
+			rooms.add(new Room(
+				arch.capacityJob()   / arch.roomCount(),
+				arch.capacityOuter() / arch.roomCount(),
+				arch.contact()));
 	}
 	
-	public static Building fromParser(FileReadParser parser)
+	public int index()
 	{
-		final String id = parser.read(String.class);
-		final int capJob = parser.read(Integer.class);
-		final int capOut = parser.read(Integer.class);
-		final int roomCo = (capJob + capOut) / parser.read(Integer.class);
-		final double contact = parser.read(Double.class);
-		return new Building(id, roomCo, capJob, capOut, contact);
+		return index;
 	}
 	
-	public void toParser(FileWriteParser parser)
+	public int getCityIndex()
 	{
-		parser.write(String .class, type);
-		parser.write(Integer.class, capacityJob());
-		parser.write(Integer.class, capacityOuter());
-		parser.write(Integer.class, (capacityJob() + capacityOuter()) / roomCount);
-		parser.write(Double .class, contact);
-	}
-
-	public Building cloneBuilding()
-	{
-		return new Building(type, roomCount, capacityJob(), capacityOuter(), contact);
+		return cityIndex;
 	}
 	
 	/**
@@ -58,7 +52,7 @@ public class Building implements TimeSensitive
 	 */
 	public int capacityJob()
 	{
-		return rooms.get(0).capacityJob() * roomCount;
+		return arch.capacityJob();
 	}
 
 	/**
@@ -67,46 +61,68 @@ public class Building implements TimeSensitive
 	 */
 	public int capacityOuter()
 	{
-		return rooms.get(0).capacityOuter() * roomCount;
+		return arch.capacityOuter();
 	}
 	
-	public boolean canBeEntered(boolean job)
+	/**
+	 * Checks whether specified room has a free place.
+	 * @param address Address to check.
+	 * @return whether specified room has a free place.
+	 */
+	public boolean hasRoom(Address address)
 	{
-		for(Room room : rooms)
-			if(room.canBeEntered(job))
-				return true;
-		return false;
+		return rooms.get(address.getRoomIndex()).hasRoom(address);
+	}
+
+	/**
+	 * Adds person to a room in this building as specified by address.
+	 * @param person Person to add.
+	 * @param address Address to add to.
+	 */
+	public void addPerson(Person person, Address address)
+	{
+		rooms.get(address.getRoomIndex()).addPerson(person, address);
 	}
 	
-	public void enteredBy(Person person, boolean job)
+	/**
+	 * Removes person from a room in this building as specified by address.
+	 * @param person Person to remove.
+	 * @param address Address to remove from.
+	 */
+	public void removePerson(Person person, Address address)
 	{
-		for(Room room : rooms)
-			if(room.canBeEntered(job))
-			{
-				room.enteredBy(person, job);
-				return;
-			}
-	}
-	
-	public void leftBy(Person person, boolean job)
-	{
-		for(Room room : rooms)
-			if(room.isPresent(person))
-			{
-				room.leftBy(person, job);
-				return;
-			}
+		rooms.get(address.getRoomIndex()).removePerson(person, address);
 	}
 	
 	@Override
-	public void nextHour()
+	public void nextHour(SimTime time)
 	{
 		for(Room room : rooms)
-			room.nextHour();
+			room.nextHour(time);
 	}
 
-	public String type()
+	public Architecture getArchitecture()
 	{
-		return type;
+		return arch;
+	}
+
+	@Override
+	public void probe(HourlyLogger logger)
+	{
+		for(Room r : rooms)
+			r.probe(logger);
+	}
+
+	/**
+	 * Looks for an available room in this building.
+	 * @param job Whether to look for a job position.
+	 * @return address Address of a found room, or null.
+	 */
+	public Address seekFree(boolean job)
+	{
+		for(int i = 0; i < rooms.size(); i++)
+			if(rooms.get(i).hasRoom(job))
+				return Address.ofBuilding(cityIndex, index, i, job);
+		return null;
 	}
 }
